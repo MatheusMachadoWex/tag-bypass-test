@@ -23,12 +23,13 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Create and push tag
         run: |
           git config --global user.name "tag-bypass-app[bot]"
           git config --global user.email "1896280+tag-bypass-app[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/MatheusMachadoWex/tag-bypass-test.git
           git tag test-bypass-1
           git push origin test-bypass-1
         env:
