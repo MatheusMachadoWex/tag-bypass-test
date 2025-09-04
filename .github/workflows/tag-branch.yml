@@ -1,0 +1,35 @@
+name: Tag Branch
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to tag'
+        required: true
+        default: 'main'
+  push:
+    branches:
+      - main
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: 1896280
+          private-key: ${{ secrets.TAG_BYPASS_APP_PRIVATE_KEY }}
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create and push tag
+        run: |
+          git config --global user.name "tag-bypass-app[bot]"
+          git config --global user.email "1896280+tag-bypass-app[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/MatheusMachadoWex/tag-bypass-test.git
+          git tag test-bypass-1
+          git push origin test-bypass-1
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
